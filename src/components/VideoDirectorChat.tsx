@@ -29,8 +29,8 @@ Ask me anything about your video! For example:
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  const handleSendMessage = async (customPromptText?: string) => {
-    const textToSend = customPromptText || inputMessage.trim();
+  const handleSendMessage = async (customPromptText?: string | unknown) => {
+    const textToSend = typeof customPromptText === "string" ? customPromptText.trim() : inputMessage.trim();
     if (!textToSend || isLoading) return;
 
     const userMsg: ChatMessage = {
@@ -50,13 +50,15 @@ Ask me anything about your video! For example:
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: textToSend,
-          history: messages.map((m) => ({ role: m.role, content: m.content })),
+          history: messages
+            .filter((m) => typeof m?.content === "string")
+            .map((m) => ({ role: m.role, content: m.content })),
           videoContext: {
-            verdict: analysisData.verdict,
-            overallScore: analysisData.overallScore,
-            strengths: analysisData.strengths,
-            weaknesses: analysisData.weaknesses,
-            executiveSummary: analysisData.executiveSummary,
+            verdict: typeof analysisData?.verdict === "string" ? analysisData.verdict : "",
+            overallScore: typeof analysisData?.overallScore === "number" ? analysisData.overallScore : 0,
+            strengths: Array.isArray(analysisData?.strengths) ? analysisData.strengths : [],
+            weaknesses: Array.isArray(analysisData?.weaknesses) ? analysisData.weaknesses : [],
+            executiveSummary: typeof analysisData?.executiveSummary === "string" ? analysisData.executiveSummary : "",
           },
         }),
       });

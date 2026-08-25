@@ -59,6 +59,10 @@ export default function App() {
 
       setProgressStep("Sending to Gemini 3.1 Pro Preview for video understanding...");
 
+      const platform = typeof options?.platform === "string" ? options.platform : "general";
+      const creatorGoals = typeof options?.creatorGoals === "string" ? options.creatorGoals : "";
+      const customPrompt = typeof options?.customPrompt === "string" ? options.customPrompt : "";
+
       const response = await fetch("/api/analyze-video", {
         method: "POST",
         headers: {
@@ -66,10 +70,10 @@ export default function App() {
         },
         body: JSON.stringify({
           videoBase64: base64Data,
-          mimeType: fileBlob.type || "video/mp4",
-          targetPlatform: options.platform,
-          creatorGoals: options.creatorGoals,
-          customPrompt: options.customPrompt,
+          mimeType: typeof fileBlob?.type === "string" && fileBlob.type ? fileBlob.type : "video/mp4",
+          targetPlatform: platform,
+          creatorGoals: creatorGoals,
+          customPrompt: customPrompt,
         }),
       });
 
