@@ -1,0 +1,7 @@
+{
+  "name": "Video Content Analyzer",
+  "description": "Analyze video content with Gemini 3.1 Pro for quality assessment, hook retention, pacing, and creator feedback.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
